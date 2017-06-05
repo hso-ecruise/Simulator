@@ -3,8 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-using ecruise.Models;
-using ecruise;
+//using ecruise.Models;
 
 namespace Simulator
 {
@@ -26,14 +25,10 @@ namespace Simulator
             // New code:
             try
             {
-                SimClient client = new SimClient();
-                Response r = await client.LoginAsync("admin@ecruise.me", "ecruiseAdmin123!!!");
-                Console.WriteLine(r.Token.ToString());
-                client.access_token = r.Token;
+                await TaskScheduler.loginAsAdmin();
 
-                Car car = await client.Cars2Async(1, "");
-                Console.WriteLine(car.ToString());
-
+                await TaskScheduler.getCarbyId(1);
+                
             }
             catch (Exception e)
             {
