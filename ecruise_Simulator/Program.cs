@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Net.Http;
-using System.Net.Http.Headers;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-//using ecruise.Models;
-
-namespace Simulator
+namespace ecruise_Simulator
 {
     class Program
     {
-       
+
+
         /// <summary>
         /// Der Haupteinstiegspunkt für die Anwendung.
         /// </summary>
@@ -28,7 +28,7 @@ namespace Simulator
                 await TaskScheduler.loginAsAdmin();
 
                 await TaskScheduler.getCarbyId(1);
-                
+
             }
             catch (Exception e)
             {

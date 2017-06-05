@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simulator", "Simulator\Simulator.csproj", "{EAF62EF9-9D05-465C-BF64-A833ED5DDD94}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ecruise_Client", "ecruise_Client\ecruise_Client.csproj", "{6F878089-515B-4257-9274-78920BA44865}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ecruise_Simulator", "ecruise_Simulator\ecruise_Simulator.csproj", "{7E8408DD-9EF7-47CB-8F3F-D5E9442D0A56}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{EAF62EF9-9D05-465C-BF64-A833ED5DDD94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EAF62EF9-9D05-465C-BF64-A833ED5DDD94}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EAF62EF9-9D05-465C-BF64-A833ED5DDD94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F878089-515B-4257-9274-78920BA44865}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F878089-515B-4257-9274-78920BA44865}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F878089-515B-4257-9274-78920BA44865}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F878089-515B-4257-9274-78920BA44865}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E8408DD-9EF7-47CB-8F3F-D5E9442D0A56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E8408DD-9EF7-47CB-8F3F-D5E9442D0A56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E8408DD-9EF7-47CB-8F3F-D5E9442D0A56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E8408DD-9EF7-47CB-8F3F-D5E9442D0A56}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
