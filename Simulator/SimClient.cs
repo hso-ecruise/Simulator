@@ -626,7 +626,7 @@ namespace Simulator
         /// <returns>The email of the `Customer` object has been updated successfully.
         ///   Returns the reference to the updated `Customer` object.</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<PostReference> EmailAsync(double customerId, string email)
+        public System.Threading.Tasks.Task<PostReference> CustomerPatchEmailAsync(double customerId, string email)
         {
             return EmailAsync(customerId, email, System.Threading.CancellationToken.None);
         }
@@ -726,7 +726,7 @@ namespace Simulator
         ///   successfully.
         ///   Returns the reference to the updated `Customer` object.</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<PostReference> PhoneNumberAsync(double customerId, string phoneNumber)
+        public System.Threading.Tasks.Task<PostReference> CustomerPatchPhoneNumberAsync(double customerId, string phoneNumber)
         {
             return PhoneNumberAsync(customerId, phoneNumber, System.Threading.CancellationToken.None);
         }
@@ -918,7 +918,7 @@ namespace Simulator
         ///   successfully.
         ///   Returns the reference to the updated `Customer` object.</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<PostReference> AddressAsync(double customerId, Address address)
+        public System.Threading.Tasks.Task<PostReference> CustomerPatchAddressAsync(double customerId, Address address)
         {
             return AddressAsync(customerId, address, System.Threading.CancellationToken.None);
         }
@@ -1015,7 +1015,7 @@ namespace Simulator
         ///   successfully.
         ///   Returns the reference to the updated `Customer` object.</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<PostReference> VerifiedAsync(double customerId, bool verified)
+        public System.Threading.Tasks.Task<PostReference> CustomerPatchVerifiedAsync(double customerId, bool verified)
         {
             return VerifiedAsync(customerId, verified, System.Threading.CancellationToken.None);
         }
@@ -2222,7 +2222,7 @@ namespace Simulator
 
         /// <returns>The object has been updated successfully. The reference to the newly updated trip is returned.</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<PostReference> Trips3Async(int tripId, Trip2 trip)
+        public System.Threading.Tasks.Task<PostReference> TripPatchTrips3Async(int tripId, Trip2 trip)
         {
             return Trips3Async(tripId, trip, System.Threading.CancellationToken.None);
         }
@@ -2627,7 +2627,7 @@ namespace Simulator
 
         /// <returns>The object has been updated successfully. A reference to the newly updated invoice is returned.</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<PostReference> PaidAsync(int invoiceId, bool paid)
+        public System.Threading.Tasks.Task<PostReference> InvoicePatchPaidAsync(int invoiceId, bool paid)
         {
             return PaidAsync(invoiceId, paid, System.Threading.CancellationToken.None);
         }
@@ -3877,7 +3877,7 @@ namespace Simulator
         /// <returns>The specified car maintenance has been successfully updated.
         /// A reference to the updated car maintenence is returned.</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<PostReference> CompletedDateAsync(int carMaintenanceId, System.DateTime completedDate)
+        public System.Threading.Tasks.Task<PostReference> CarMaintenancePatchCompletedDateAsync(int carMaintenanceId, System.DateTime completedDate)
         {
             return CompletedDateAsync(carMaintenanceId, completedDate, System.Threading.CancellationToken.None);
         }
@@ -4610,7 +4610,7 @@ namespace Simulator
 
         /// <returns>The object has been updated successfully. The newly updated car is returned.</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<Car> ChargingstateAsync(int carId, ChargingState chargingState)
+        public System.Threading.Tasks.Task<Car> CarPatchChargingstateAsync(int carId, ChargingState chargingState)
         {
             return ChargingstateAsync(carId, chargingState, System.Threading.CancellationToken.None);
         }
@@ -4715,7 +4715,7 @@ namespace Simulator
 
         /// <returns>The object has been updated successfully. The newly updated car is returned.</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<Car> BookingstateAsync(int carId, BookingState bookingState)
+        public System.Threading.Tasks.Task<Car> CarPatchBookingstateAsync(int carId, BookingState bookingState)
         {
             return BookingstateAsync(carId, bookingState, System.Threading.CancellationToken.None);
         }
@@ -4820,7 +4820,7 @@ namespace Simulator
 
         /// <returns>The object has been updated successfully. The newly updated car is returned.</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<Car> MileageAsync(int carId, int mileage)
+        public System.Threading.Tasks.Task<Car> CarPatchMileageAsync(int carId, int mileage)
         {
             return MileageAsync(carId, mileage, System.Threading.CancellationToken.None);
         }
@@ -4925,7 +4925,7 @@ namespace Simulator
 
         /// <returns>The object has been updated successfully. The newly updated car is returned.</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<Car> ChargelevelAsync(int carId, double chargeLevel)
+        public System.Threading.Tasks.Task<Car> CarPatchChargelevelAsync(int carId, double chargeLevel)
         {
             return ChargelevelAsync(carId, chargeLevel, System.Threading.CancellationToken.None);
         }
@@ -5030,7 +5030,7 @@ namespace Simulator
 
         /// <returns>The object has been updated successfully. The newly updated car is returned.</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<Car> PositionAsync(int carId, double latitude, double longitude)
+        public System.Threading.Tasks.Task<Car> CarPatchPositionAsync(int carId, double latitude, double longitude)
         {
             return PositionAsync(carId, latitude, longitude, System.Threading.CancellationToken.None);
         }
@@ -5447,7 +5447,7 @@ namespace Simulator
         /// <returns>The `CarChargingStation` has been successfully updated.
         ///   Returns a reference to the updated object.</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<PostReference> ChargeEndAsync(int carChargingStationId, System.DateTime chargeEnd)
+        public System.Threading.Tasks.Task<PostReference> CarPatchChargeEndAsync(int carChargingStationId, System.DateTime chargeEnd)
         {
             return ChargeEndAsync(carChargingStationId, chargeEnd, System.Threading.CancellationToken.None);
         }

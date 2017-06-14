@@ -27,7 +27,7 @@ namespace Simulator
             {
                 await TaskScheduler.loginAsAdmin();
 
-                await TaskScheduler.getCarbyId(1);
+                await TaskScheduler.getCarbyId(1,5000);
                 
             }
             catch (Exception e)

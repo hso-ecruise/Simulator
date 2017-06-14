@@ -19,17 +19,30 @@ namespace Simulator
             return true;
         }
 
-        public static async Task<bool> getCarbyId(int id)
+        public static async Task<bool> getCarbyId(int id, int delay)
         {
+            await Task.Delay(delay);
             Car car = await client.Cars2Async(1, "");
             Console.WriteLine(car.CarId.ToString());
             return true;
 
         }
-
-        static void makeMaintanace()
+        static async Task simulateTrip(int carId, ChargingStation from, CarChargingStation to, int delay)
         {
+            await Task.Delay(delay);
+            Trip trip = new Trip();
+            trip.CarId = carId;
+            trip.CustomerId = 123;
+            trip.StartDate = DateTime.Now;
+            trip.EndDate = DateTime.Now.AddMinutes(1.0);
+            trip.StartChargingStationId = 1;
+            trip.EndChargingStationId = 2;
 
+            await client.TripsAsync(trip);
+
+            await Task.Delay(60000);
+            ChargingStation station = await client.ChargingStations2Async((int)trip.EndChargingStationId, "");
+            await client.CarPatchPositionAsync(carId, station.Latitude, station.Longitude);
         }
     }
 }
