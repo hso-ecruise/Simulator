@@ -4765,7 +4765,7 @@ namespace Simulator
                             var result_ = default(Car);
                             try
                             {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<Car>(responseData_);
+                                //result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<Car>(responseData_);
                                 return result_;
                             }
                             catch (System.Exception exception)
@@ -6918,13 +6918,13 @@ namespace Simulator
     public enum ChargingState
     {
         [System.Runtime.Serialization.EnumMember(Value = "DISCHARGING")]
-        DISCHARGING = 0,
+        DISCHARGING = 1,
 
         [System.Runtime.Serialization.EnumMember(Value = "CHARGING")]
-        CHARGING = 1,
+        CHARGING = 2,
 
         [System.Runtime.Serialization.EnumMember(Value = "FULL")]
-        FULL = 2,
+        FULL = 3,
 
     }
 
@@ -6932,13 +6932,13 @@ namespace Simulator
     public enum BookingState
     {
         [System.Runtime.Serialization.EnumMember(Value = "AVAILABLE")]
-        AVAILABLE = 0,
+        AVAILABLE = 1,
 
         [System.Runtime.Serialization.EnumMember(Value = "BOOKED")]
-        BOOKED = 1,
+        BOOKED = 2,
 
         [System.Runtime.Serialization.EnumMember(Value = "BLOCKED")]
-        BLOCKED = 2,
+        BLOCKED = 3,
 
     }
 
@@ -6969,13 +6969,13 @@ namespace Simulator
     public enum CarChargingState
     {
         [System.Runtime.Serialization.EnumMember(Value = "DISCHARGING")]
-        DISCHARGING = 0,
+        DISCHARGING = 1,
 
         [System.Runtime.Serialization.EnumMember(Value = "CHARGING")]
-        CHARGING = 1,
+        CHARGING = 2,
 
         [System.Runtime.Serialization.EnumMember(Value = "FULL")]
-        FULL = 2,
+        FULL = 3,
 
     }
 
@@ -6983,13 +6983,13 @@ namespace Simulator
     public enum CarBookingState
     {
         [System.Runtime.Serialization.EnumMember(Value = "AVAILABLE")]
-        AVAILABLE = 0,
+        AVAILABLE = 1,
 
         [System.Runtime.Serialization.EnumMember(Value = "BOOKED")]
-        BOOKED = 1,
+        BOOKED = 2,
 
         [System.Runtime.Serialization.EnumMember(Value = "BLOCKED")]
-        BLOCKED = 2,
+        BLOCKED = 3,
 
     }
 
