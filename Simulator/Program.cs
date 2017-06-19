@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentScheduler;
+using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -16,7 +17,10 @@ namespace Simulator
         [STAThread]
         static void Main()
         {
-            RunAsync().Wait();
+           // RunAsync().Wait();
+
+            JobManager.Initialize(new BackgroundTasker().ScheduleBookings());
+            Console.ReadLine();
         }
 
         static async Task RunAsync()
