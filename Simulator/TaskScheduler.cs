@@ -15,7 +15,7 @@ namespace Simulator
                 client = new SimClient();
             Response r = await client.LoginAsync("admin@ecruise.me", "ecruiseAdmin123!!!");
             Console.WriteLine("access_token: " + r.Token.ToString());
-            SimClient.access_token = r.Token;
+            client.access_token = r.Token;
             return true;
         }
 

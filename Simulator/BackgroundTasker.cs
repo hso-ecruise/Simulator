@@ -3,12 +3,14 @@ using FluentScheduler;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace Simulator
 {
     internal class BackgroundTasker
     {
         private static SimClient client = null;
+        private static int OverrunChargingStationId = 5;
         private ObservableCollection<CarChargingStation> allCarCarchingStations = null;
         private Registry registry = null;
         Random rnd = new Random();
@@ -17,41 +19,53 @@ namespace Simulator
         {
             if (client == null)
                 client = new SimClient();
-            loginAsAdmin();
+            loginAsAdmin().Wait();
             registry = new Registry();
 
         }
 
         internal Registry ScheduleBookings()
         {
+            //Thread.Sleep(2000);
             // Create registry
             //registry.Schedule((Action)loginAsAdmin).ToRunEvery(1).Minutes();
 
             //registry.Schedule((Action)ScheduleRandomBooking).ToRunEvery(10).Seconds();
             //registry.Schedule((Action)fixCarBookingState).ToRunNow();
-
             //registry.Schedule((Action)PostCar).ToRunNow();
-            //registry.Schedule((Action)allCarsToString).ToRunEvery(5).Minutes();
-            registry.Schedule((Action)allTripsToString).ToRunNow(); //ToRunEvery(5).Minutes();
+
+            registry.Schedule((Action)allCarsToString).ToRunNow();//.ToRunEvery(15).Seconds();
+
+            //registry.Schedule((Action)allTripsToString).ToRunEvery(5).Seconds();
             //registry.Schedule((Action)allStatisticsToString).ToRunNow();
             //registry.Schedule((Action)allChargingStationsToString).ToRunNow();
+            endAllTrips();
+            allChargingStationsToString();
+            allCarChargingStationsToString();
+            //ScheduleEndTrip(64, 2);
+            //ScheduleEndTrip(65, 4);
+            //ScheduleEndTrip(66, 6);
+            //ScheduleEndTrip(68, 1);
+            ////ScheduleEndTrip(58, 5);
 
-            //ScheduleEndTrip(45, 9);
-            //registry.Schedule((Action)simulateCharging).ToRunEvery(1).Minutes();
+            registry.Schedule((Action)simulateCharging).ToRunEvery(1).Seconds();
 
             //registry.Schedule((Action)ScheduleEndTrip).ToRunOnceIn(50).Seconds();
             //registry.Schedule((Action)allTripsToString).ToRunOnceIn(25).Seconds();
             //registry.Schedule((Action)allChargingStationsToString).ToRunOnceIn(25).Seconds();
-            //registry.Schedule((Action)ScheduleRandomTrip).ToRunEvery(5).Minutes();
+
+            //registry.Schedule((Action)ScheduleTripFromChargingStation).ToRunEvery(10).Seconds();
+            //registry.Schedule((Action)ScheduleRandomTrip).ToRunEvery(5).Seconds();
+
             //registry.Schedule((Action)allTripsToString).ToRunOnceIn(45).Seconds();
             //throw new NotImplementedException();
             return registry;
         }
-        private static async void loginAsAdmin()
+        private static async Task loginAsAdmin()
         {
             Response r = await client.LoginAsync("admin@ecruise.me", "ecruiseAdmin123!!!");
             Console.WriteLine("access_token: " + r.Token.ToString());
-            SimClient.access_token = r.Token;
+            client.access_token = r.Token;
             return ;
         }
         private async void simulateCharging()
@@ -73,22 +87,54 @@ namespace Simulator
 
             }
         }
-        private async void ScheduleTripToChargingStation(int chargingStationId)
-        {
-            ChargingStation cs = await client.ChargingStations2Async(chargingStationId, "");
 
+        private async void ScheduleTripFromChargingStation()
+        {
+            if (OverrunChargingStationId != 0)
+            {
+                ChargingStation cs = await client.ChargingStations2Async(OverrunChargingStationId, "");
+                if (true)   //cs.Slots > cs.SlotsOccupied)
+                {
+                    ObservableCollection< CarChargingStation > allCcs = await client.CarChargingStationsAllAsync("");
+                    ObservableCollection<Car> carsAtChargingStation = new ObservableCollection<Car>();
+                    ObservableCollection<Car> allCars = await client.CarsAllAsync("");
+                    foreach (Car c in allCars)
+                    {
+                        int lastChargingStationId = 0;
+                        foreach (CarChargingStation ccs in allCcs)
+                            if (c.CarId == ccs.CarId)
+                                lastChargingStationId = ccs.ChargingStationId;
+                        if (lastChargingStationId == OverrunChargingStationId)
+                            carsAtChargingStation.Add(c);
+                    }
+                    //ObservableCollection<Car> allCarsAtCs = new ObservableCollection<Car>();
+                    //foreach (CarChargingStation ccs in ccsAnCs)
+                    //    if (ccs.ChargingStationId == OverrunChargingStationId)
+                    //        allCarsAtCs.Add(await client.Cars2Async(ccs.CarId, ""));
+
+                    ObservableCollection<Car> allAvailableCars = new ObservableCollection<Car>();
+                    foreach (Car c in carsAtChargingStation)
+                    {
+                        //Console.WriteLine(c.ToJson().ToString()+"\n");
+                        if (c.BookingState == CarBookingState.AVAILABLE && c.ChargingState == CarChargingState.FULL)
+                            allAvailableCars.Add(c);
+                    }
+                    if (allAvailableCars.Count < 1)
+                        return;
+
+                    Car currentCar = allAvailableCars[rnd.Next(0, allAvailableCars.Count - 1)];
+                    ScheduleTrip((int)currentCar.CarId);
+                }
+                else
+                    ScheduleRandomTrip();
+            }
+            else
+                ScheduleRandomTrip();
 
         }
-        private async void ScheduleTripFromChargingStation(int chargingStationId)
-        {
-            ChargingStation cs = await client.ChargingStations2Async(chargingStationId, "");
-            
-        }
+
         private async void ScheduleRandomTrip()
         {
-            Console.WriteLine(DateTime.Now.ToString());
-            Trip t = new Trip();
-            t.CustomerId = 1;
 
             ObservableCollection<Car> allCars = await client.CarsAllAsync("");
             ObservableCollection<Car> allAvailableCars = new ObservableCollection<Car>();
@@ -98,19 +144,29 @@ namespace Simulator
                 if (c.BookingState == CarBookingState.AVAILABLE && c.ChargingState == CarChargingState.FULL)
                     allAvailableCars.Add(c);
             }
-            if (allAvailableCars.Count < 1)
-            {
-                PostCar();
-                return;
-            }
-                
-            Car currentCar = allAvailableCars[rnd.Next(0, allAvailableCars.Count-1)];
-            t.CarId = currentCar.CarId;
+            //if (allAvailableCars.Count < 1)
+            //{
+            //    //PostCar();
+            //    return;
+            //}
+
+            Car currentCar = allAvailableCars[rnd.Next(0, allAvailableCars.Count - 1)];
+            ScheduleTrip((int)currentCar.CarId);
+        }
+
+
+        private async void ScheduleTrip(int carId)
+        {
+            Console.WriteLine(DateTime.Now.ToString());
+            Trip t = new Trip();
+            t.CustomerId = 1;
+
+            t.CarId = carId;
 
             ObservableCollection<CarChargingStation> ccs;
             try
             {
-                ccs = await client.ByCar2Async((int)currentCar.CarId);
+                ccs = await client.ByCar2Async((int)carId);
                 t.StartChargingStationId = ccs[0].ChargingStationId;
             }
             catch (Exception)
@@ -122,8 +178,9 @@ namespace Simulator
             //t.StartChargingStationId = ccs[0].ChargingStationId;
             t.StartDate = DateTime.UtcNow.AddMinutes(-3);
             t.TripId = 0;
+            
             PostReference r = await client.TripsAsync(t);
-            await client.CarPatchBookingstateAsync((int)currentCar.CarId, BookingState.BOOKED);
+            await client.CarPatchBookingstateAsync((int)carId, BookingState.BOOKED);
             //Console.WriteLine(DateTime.Now.ToString() + " localObject: " + t.ToJson().ToString());
             Trip dbTrip = await client.Trips2Async((int) r.Id, "");
             Console.WriteLine(DateTime.Now.ToString() + " Tripstartet: " + dbTrip.ToJson().ToString());
@@ -133,23 +190,35 @@ namespace Simulator
             b.CustomerId = 1;
             b.PlannedDate = null;
             b.TripId = dbTrip.TripId;
-            //b.BookingPositionLatitude = dbTrip.
+            ChargingStation cs = await client.ChargingStations2Async((int)t.StartChargingStationId, "");
+            b.BookingPositionLatitude = cs.Latitude;
+            b.BookingPositionLongitude = cs.Longitude;
 
             //allBookingsToString();
             await client.BookingsAsync(b);
             //allBookingsToString();
 
-            Thread.Sleep(rnd.Next(5000*60, 60000*60) );
+            Thread.Sleep(rnd.Next(5000, 60000) );
             Console.WriteLine(DateTime.Now.ToString() + " Sleep ended: " + dbTrip.ToJson().ToString());
             ScheduleEndTrip((int)dbTrip.TripId, (int) dbTrip.CarId);
             dbTrip = await client.Trips2Async((int) r.Id, "");
-            Console.WriteLine(DateTime.Now.ToString() + " Trip ended: " + dbTrip.ToJson().ToString());
             //registry.Schedule((Action)ScheduleEndTrip).ToRunNow();
             //Car car = await client.Cars2Async(i++, "");
             //Console.WriteLine(car.CarId.ToString());
             Console.WriteLine(DateTime.Now.ToString());
         }
 
+        private async void endAllTrips()
+        {
+            ObservableCollection<Trip> allTrips = await client.TripsAllAsync(Filterbystate.NOTFINISHED, "");
+            ObservableCollection<Trip> unfinishedTrips = new ObservableCollection<Trip>();
+            foreach (Trip t in allTrips)
+                if (t.EndDate == null && t.TripId != 64)
+                {
+                    Car currentCar = await client.Cars2Async((int)t.CarId, "");
+                    ScheduleEndTrip((int) t.TripId, (int) currentCar.CarId);
+                }
+        }
         private async void ScheduleEndTrip( int tripId, int carId)
         {
             Trip2 trip = new Trip2();
@@ -166,12 +235,45 @@ namespace Simulator
                     stationWithFreeSlots.Add(cs);
             if (stationWithFreeSlots.Count < 1)
                 return;
-            ChargingStation endChargingStation = stationWithFreeSlots[rnd.Next(0, stationWithFreeSlots.Count - 1)];
-            trip.EndChargingStationId = (int)endChargingStation.ChargingStationId;
-
+            ChargingStation endChargingStation = null;
+            if (OverrunChargingStationId != 0)
+            {
+                endChargingStation = await client.ChargingStations2Async(OverrunChargingStationId, "");
+                
+            }
+            if (stationWithFreeSlots.Contains(endChargingStation))
+                trip.EndChargingStationId = OverrunChargingStationId;
+            else
+            {
+                endChargingStation = stationWithFreeSlots[rnd.Next(0, stationWithFreeSlots.Count - 1)];
+                trip.EndChargingStationId = (int)endChargingStation.ChargingStationId;
+            }
             client.CarPatchPositionAsync(carId, endChargingStation.Latitude, endChargingStation.Longitude);
             
             await client.TripPatchTrips3Async(tripId,  trip);
+            Trip dbTrip = await client.Trips2Async(tripId, "");
+            Console.WriteLine(DateTime.Now.ToString() + " Trip ended: " + dbTrip.ToJson().ToString());
+        }
+        private async void fixSlotsOccupied()
+        {
+            ObservableCollection<ChargingStation> allChargingStations = await client.ChargingStationsAllAsync("");
+            foreach (ChargingStation cs in allChargingStations)
+                cs.SlotsOccupied = 0;
+            ObservableCollection<CarChargingStation> allCcs = await client.CarChargingStationsAllAsync("");
+            ObservableCollection<Car> allCars = await client.CarsAllAsync("");
+            foreach (Car c in allCars)
+            {
+                int lastChargingStationId = 0;
+                foreach (CarChargingStation ccs in allCcs)
+                    if (c.CarId == ccs.CarId)
+                        lastChargingStationId = ccs.ChargingStationId;
+                foreach (ChargingStation cs in allChargingStations)
+                    if (cs.ChargingStationId == lastChargingStationId)
+                        cs.SlotsOccupied++;
+            }
+            foreach (ChargingStation cs in allChargingStations)
+                if (cs.SlotsOccupied <= cs.Slots)
+                    client.SlotsOccupiedAsync((int)cs.ChargingStationId, cs.SlotsOccupied);
         }
         private async void fixCarBookingState()
         {
@@ -216,8 +318,8 @@ namespace Simulator
             }
             catch (Exception)
             {
-
-                throw;
+                return;
+                //throw;
             }
         }
         private async void allBookingsToString()
@@ -247,6 +349,12 @@ namespace Simulator
 
                 throw;
             }
+        }
+        private async void allCarChargingStationsToString()
+        {
+            ObservableCollection<CarChargingStation> allCarChargingStation = await client.CarChargingStationsAllAsync("");
+            foreach (CarChargingStation c in allCarChargingStation)
+                Console.WriteLine(c.ToJson().ToString() + "\n");
         }
 
         private async void allCarsToString()

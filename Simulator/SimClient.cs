@@ -19,7 +19,7 @@ namespace Simulator
     {
         private string _baseUrl = "https://api.ecruise.me/v1";
 
-        public static string access_token;
+        public string access_token;
 
         public string BaseUrl
         {
@@ -5728,6 +5728,114 @@ namespace Simulator
                         }
 
                         return default(System.Collections.ObjectModel.ObservableCollection<CarChargingStation>);
+                    }
+                    finally
+                    {
+                        if (response_ != null)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (client_ != null)
+                    client_.Dispose();
+            }
+        }
+
+        /// <returns>The `ChargingStation` has been successfully updated.
+        ///   Returns a reference to the updated object.</returns>
+        /// <exception cref="SwaggerException">A server side error occurred.</exception>
+        public System.Threading.Tasks.Task<PostReference> SlotsOccupiedAsync(int chargingStationId, int slotsOccupied)
+        {
+            return SlotsOccupiedAsync(chargingStationId, slotsOccupied, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>The `ChargingStation` has been successfully updated.
+        ///   Returns a reference to the updated object.</returns>
+        /// <exception cref="SwaggerException">A server side error occurred.</exception>
+        public async System.Threading.Tasks.Task<PostReference> SlotsOccupiedAsync(int chargingStationId, int slotsOccupied, System.Threading.CancellationToken cancellationToken)
+        {
+            if (chargingStationId == null)
+                throw new System.ArgumentNullException("chargingStationId");
+
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl).Append("/charging-stations/{ChargingStationId}/slots-occupied");
+            urlBuilder_.Replace("{ChargingStationId}", System.Uri.EscapeDataString(chargingStationId.ToString()));
+
+            var client_ = new System.Net.Http.HttpClient();
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(slotsOccupied));
+                    content_.Headers.ContentType.MediaType = "application/json";
+                    request_.Headers.Add("access_token", access_token);
+
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("PATCH");
+                    request_.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        foreach (var item_ in response_.Content.Headers)
+                            headers_[item_.Key] = item_.Value;
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "200")
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            var result_ = default(PostReference);
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<PostReference>(responseData_);
+                                return result_;
+                            }
+                            catch (System.Exception exception)
+                            {
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                        }
+                        else
+                        if (status_ == "400")
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new SwaggerException("Invalid SlotsOccupied format", status_, responseData_, headers_, null);
+                        }
+                        else
+                        if (status_ == "404")
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new SwaggerException("The requested `ChargingStationId` does not exist.", status_, responseData_, headers_, null);
+                        }
+                        else
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            var result_ = default(Error);
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<Error>(responseData_);
+
+                            }
+                            catch (System.Exception exception_)
+                            {
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception_);
+                            }
+
+                            throw new SwaggerException<Error>("Something went wrong", status_, responseData_, headers_, result_, null);
+                        }
+
+                        return default(PostReference);
                     }
                     finally
                     {
