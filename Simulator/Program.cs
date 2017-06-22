@@ -20,6 +20,7 @@ namespace Simulator
            // RunAsync().Wait();
 
             JobManager.Initialize(new BackgroundTasker().ScheduleBookings());
+            
             Console.ReadLine();
         }
 

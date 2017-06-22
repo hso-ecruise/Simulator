@@ -19,7 +19,7 @@ namespace Simulator
     {
         private string _baseUrl = "https://api.ecruise.me/v1";
 
-        public string access_token;
+        public static string access_token;
 
         public string BaseUrl
         {
